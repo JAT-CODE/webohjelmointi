@@ -12,9 +12,6 @@ var connection = mysql.createConnection({
   user : 'root', //kehitystarkoituksessa voidaan käyttää root-käyttäjää. Tuotannossa ei saa käyttää root-käyttäjää
   password : 'Ruutti',
   database : 'asiakas'
-
-
-
 });
 
 module.exports = 
@@ -36,6 +33,7 @@ module.exports =
     },
 
     fetchAll: function(req, res){
+      //T2 Toteutus
       console.log("Body = " +JSON.stringify(req.body));
       console.log("Params = " + JSON.stringify(req.query));
       console.log(req.query.nimi);
