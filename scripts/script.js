@@ -3,7 +3,7 @@ $().ready (() => {
 
     // haetaan asiakastyypit
     $.get({
-        url: "https://codez.savonia.fi/jussi/api/asiakas/tyypit.php",
+        url: "http://localhost:3002/Asiakas",
         success: (result) => {
             astys = result;
             result.forEach((r) => {
@@ -18,7 +18,7 @@ $().ready (() => {
     fetch = () => {
         let sp = searcParameters();
         $.get({
-            url: `https://codez.savonia.fi/jussi/api/asiakas/haku.php?${sp}`,
+            url: `http://localhost:3002/Asiakas${sp}`,
             success: (result) => {
                 showResultInTable(result, astys);
         }});
@@ -144,17 +144,12 @@ searcParameters = () => {
 showResultInTable = (result, astys) => {
     $('#data tbody').empty();
     result.forEach(element => {
-        let trstr = "<tr><td>" + element.nimi + "</td>\n";
-        trstr += "<td>" + element.osoite + "</td>\n";
-        trstr += "<td>" + element.postinro + "</td>\n";
-        trstr += "<td>" + element.postitmp + "</td>\n";
-        trstr += "<td>" + element.luontipvm + "</td>\n";
-        astys.forEach(asty => {
-            if (asty.avain === element.asty_avain) {
-                trstr += "<td>" + toTitleCase(asty.selite) + "</td>";
-            }
-        });
-        trstr += `<td><button onclick="deleteCustomer(${element.avain});" class="deleteBtn">Poista</button></td>`;
+        let trstr = "<tr><td>" + element.NIMI + "</td>\n";
+        trstr += "<td>" + element.OSOITE + "</td>\n";
+        trstr += "<td>" + element.POSTINRO + "</td>\n";
+        trstr += "<td>" + element.POSTITMP + "</td>\n";
+        trstr += "<td>" + element.LUONTIPVM + "</td>\n";
+        trstr += "<td>" + element.ASTY_AVAIN + "</td>\n";
         trstr += "</tr>\n";
         $('#data tbody').append(trstr);
     });
