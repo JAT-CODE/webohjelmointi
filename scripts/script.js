@@ -18,7 +18,7 @@ $().ready (() => {
     fetch = () => {
         let sp = searcParameters();
         $.get({
-            url: `http://localhost:3002/Asiakas${sp}`,
+            url: `http://localhost:3002/Asiakas?${sp}`,
             success: (result) => {
                 showResultInTable(result, astys);
         }});

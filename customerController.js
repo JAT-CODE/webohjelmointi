@@ -34,7 +34,20 @@ module.exports =
 
     fetchAll: function(req, res){
       //T2 Toteutus
-      var sql = 'SELECT * FROM asiakas WHERE 1 = 1'
+      var sql = 'SELECT * FROM asiakas WHERE 1 = 1';
+
+      if(req.query.nimi != undefined) {
+          var nimi = req.query.nimi;
+          sql = sql + " AND nimi like '" + nimi + "%'";
+      }
+      else if(req.query.osoite != undefined) {
+        var osoite = req.query.osoite;
+        sql = sql + " AND osoite like'" + osoite + "%'";
+      }
+      else if(req.query.asty_avain != undefined) {
+        var asty_avain = req.query.asty_avain;
+        sql = sql + " AND asty_avain like'" + asty_avain + "%'";
+      }
       //
       connection.query(sql, function(error, results, fields){
         if ( error ){
@@ -52,6 +65,8 @@ module.exports =
       console.log("Body = " +JSON.stringify(req.body));
       console.log("Params = " + JSON.stringify(req.query));
       console.log(req.query.nimi);
+      console.log(req.query.osoite);
+      console.log(req.query.asty_avain);
       
       //res.send("Kutsuttiin fetchAll");
     },
