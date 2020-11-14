@@ -21,8 +21,8 @@ var allowCrossDomain = function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
 
     // Jos haluttaisiin rajata hakuja joidenkin ehtojen perusteella, niin määritettäisiin näin: 
-    //res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
-    //res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
     
     next();
 }
@@ -36,6 +36,8 @@ app.use(bodyParser.json()); //* ...jsonina
 // Staattiset tiedostot, esim. kuvat, tyylitiedostot, scriptit käyttöliittymää varten
 app.use(express.static('public'));
 
+
+
 // REST API Asiakas
 app.route('/Types') // route reitittää pyynnön merkkijonon ja metodin perusteella customerControlleriin
     .get(customerController.fetchTypes)
@@ -44,6 +46,9 @@ app.route('/Types') // route reitittää pyynnön merkkijonon ja metodin peruste
         res.setHeader('Content-Type', 'text/plain');
         res.end("post metodilla mennään");
     })
+
+app.route("/Tyypit")
+    .get(customerController.haeTyypit);
 
 
 app.route('/Asiakas')

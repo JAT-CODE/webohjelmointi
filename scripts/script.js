@@ -14,6 +14,7 @@ $().ready (() => {
         }
     });
 
+
     // haetaan data
     fetch = () => {
         let sp = searcParameters();
@@ -54,16 +55,16 @@ $().ready (() => {
     let form = dialog.find("form")
         .on("submit", (event) => {
             event.preventDefault();
-            if (validateAddCust(form)) {
+            //if (validateAddCust(form)) { //poistetaan kenttien tarkistus kommentoimalla tämä
                 let param = dialog.find("form").serialize();
                 addCust(param);
-            }
+            //} // ja tämä
         }
     );
 
     // tekee post-kutsun palvelimelle ja vastauksen saatuaan jatkaa
     addCust = (param) => {
-        $.post("https://codez.savonia.fi/jussi/api/asiakas/lisaa.php", param)
+        $.post("http://localhost:3002/Asiakas", param)
             .then((data) => {
                 showAddCustStat(data);
                 $('#addCustDialog').dialog("close");
@@ -150,18 +151,22 @@ showResultInTable = (result, astys) => {
         trstr += "<td>" + element.POSTITMP + "</td>\n";
         trstr += "<td>" + element.LUONTIPVM + "</td>\n";
         trstr += "<td>" + element.ASTY_AVAIN + "</td>\n";
-        trstr += "</tr>\n";
+        trstr += '<td><button type="button" value="Poista" onclick="deleteCustomer('+element.AVAIN+')">Poista</button></td>\n';
         $('#data tbody').append(trstr);
     });
 }
 
 // poistetaan asiakas
 deleteCustomer = (key) => {
+    console.log(key);
     if (isNaN(key)) {
         return;
     }
-    $.get({
-        url: `https://codez.savonia.fi/jussi/api/asiakas/poista.php?avain=${key}`,
+    console.log("Poistettu");
+    //html delete 
+    $.ajax({
+        url: `http://localhost:3002/Asiakas/${key}`,
+        type: 'DELETE',
         success: (result) => {
             fetch();
         }
@@ -175,4 +180,18 @@ toTitleCase = (str) => {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }
     );
+}
+haeTyypit();
+function haeTyypit() {
+    $.get(
+        {
+            url: 'http://localhost:3002/Tyypit',
+            success: (result) => {
+                result.forEach(element => {
+                    var optionString = "<option value='" + element.Avain + "'>" + element.Lyhenne + " - " + element.Selite + "</option>"
+                    $(".custType").append(optionString);
+                })
+            }
+        }
+    )
 }

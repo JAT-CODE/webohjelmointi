@@ -1,6 +1,6 @@
 'use strict'
 
-const { json } = require('express');
+const { json, response } = require('express');
 // Asenna ensin mysql driver 
 // npm install mysql --save
 
@@ -14,9 +14,8 @@ var connection = mysql.createConnection({
   database : 'asiakas'
 });
 
-module.exports = 
-{
-    fetchTypes: function (req, res) {  
+module.exports = {
+  fetchTypes: function (req, res) {  
       connection.query('SELECT Avain, Lyhenne, Selite FROM Asiakastyyppi', function(error, results, fields){
         if ( error ){
           console.log("Virhe haettaessa dataa Asiakas taulusta: " + error);
@@ -29,7 +28,12 @@ module.exports =
           res.json(results); //onnistunut data lähetetään selaimelle (tai muulle)
         }
     });
+  },
 
+    haeTyypit: function (req, res) {
+      connection.query('SELECT Avain, Lyhenne, Selite FROM Asiakastyyppi', function (error, results, fields) {
+        res.json(results);
+      });
     },
 
     fetchAll: function(req, res){
@@ -57,33 +61,64 @@ module.exports =
         }
         else
         {
-          console.log("Data = " + JSON.stringify(results));
+          //console.log("Data = " + JSON.stringify(results));
           res.json(results); //onnistunut data lähetetään selaimelle (tai muulle)
         }
       });
-
-      console.log("Body = " +JSON.stringify(req.body));
-      console.log("Params = " + JSON.stringify(req.query));
-      console.log(req.query.nimi);
-      console.log(req.query.osoite);
-      console.log(req.query.asty_avain);
-      
       //res.send("Kutsuttiin fetchAll");
     },
 
     create: function(req, res){
-      console.log("Data = " + JSON.stringify(req.body));
-      console.log(req.body.nimi);
-      res.send("Kutsuttiin create");
-    },
+      //Ensin tarkistetaan, että onko tarvittavat kentät
+      //Jos ei, niin res.status(400) ja res.json({"status": "Tänne viesdtiä"})
+      //jos on kentät, niin sitten ->
+      //connection.query...
+      /*INSERT INTO asiakas (nimi, osoite, postinro, postitmp, luontipvm, asty_avain)
+        VALUES ("Testi Testinen","Mikrokatu 1", "90580", getdate(), )*/
+
+        var d = new Date();
+        var month = d.getUTCMonth() +1;
+        var day = d.getUTCDate();
+        var year = d.getUTCFullYear();
+        var newdate = year + "-" + month + "-" + day;
+        req.body.luontipvm;
+
+        var sql = 'INSERT INTO asiakas (nimi, osoite, postinro, postitmp, luontipvm, asty_avain) VALUES (' + "'"+req.body.nimi+"'" +','+ "'"+req.body.osoite+"'" +','+ "'"+req.body.postinro+"'" +','+ "'"+req.body.postitmp+"'" +','+
+        "'"+newdate+"'" +','+ req.body.asty_avain + ')';
+
+        connection.query(sql, function (error, results, fields){
+          if (error){
+            console.log(sql);
+            console.log("Virhe lisättäessä dataa Asiakas taulusta: " + error);
+            res.status(400);
+            res.json({"status": "bad request"});
+          }
+          else {
+            //console.log("Data = " + JSON.stringify(req.body));
+            response.statusCode = 200;
+            res.json({"status": "ok"});
+          }
+
+        })
+        //res.send("Kutsuttiin create");
+      },
 
     update: function(req, res){
     },
 
     delete : function (req, res) {
-      console.log("Body = " + JSON.stringify(req.body));
-      console.log("Params = " + JSON.stringify(req.params));
-      
-      res.send("Kutsuttiin delete");
+      //connection.query...
+      //DETELE FROM asiakas WHERE avain=x
+      var sql = 'DELETE FROM asiakas WHERE avain =' + req.params.id;
+      connection.query(sql, function (error, results, fields){
+        if (error) {
+          console.log("Virhe poistossa: " + error);
+        }
+        else {
+          response.statusCode =200;
+          res.json({"status": "ok"});
+        }
+      })
+      console.log("Params = " + JSON.stringify(req.params.id)); //tänne tulee id: req.params.id
     }
 }
