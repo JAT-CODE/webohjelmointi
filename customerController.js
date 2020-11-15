@@ -1,5 +1,4 @@
 'use strict'
-
 const { json, response } = require('express');
 // Asenna ensin mysql driver 
 // npm install mysql --save
@@ -83,25 +82,23 @@ module.exports = {
         var newdate = year + "-" + month + "-" + day;
         req.body.luontipvm;
 
-        var sql = 'INSERT INTO asiakas (nimi, osoite, postinro, postitmp, luontipvm, asty_avain) VALUES (' + "'"+req.body.nimi+"'" +','+ "'"+req.body.osoite+"'" +','+ "'"+req.body.postinro+"'" +','+ "'"+req.body.postitmp+"'" +','+
-        "'"+newdate+"'" +','+ req.body.asty_avain + ')';
+    var sql = 'INSERT INTO asiakas (nimi, osoite, postinro, postitmp, luontipvm, asty_avain) VALUES (' + "'" + req.body.nimi + "'" + ',' + "'" + req.body.osoite + "'" + ',' + "'" + req.body.postinro + "'" + ',' + "'" + req.body.postitmp + "'" + ',' +
+      "'" + newdate + "'" + ',' + req.body.asty_avain + ')';
 
-        connection.query(sql, function (error, results, fields){
-          if (error){
-            console.log(sql);
-            console.log("Virhe lisättäessä dataa Asiakas taulusta: " + error);
-            res.status(400);
-            res.json({"status": "bad request"});
-          }
-          else {
-            //console.log("Data = " + JSON.stringify(req.body));
-            response.statusCode = 200;
-            res.json({"status": "ok"});
-          }
-
-        })
-        //res.send("Kutsuttiin create");
-      },
+    connection.query(sql, function (error, results, fields) {
+      if (error) {
+        console.log(sql);
+        console.log("Virhe lisättäessä dataa Asiakas taulusta: " + error);
+        res.status(400);
+        res.json({ "status": "bad request" });
+      }
+      else {
+        //console.log("Data = " + JSON.stringify(req.body));
+        response.statusCode = 200;
+        res.json({ "status": "ok" });
+      }
+    })
+  },
 
     update: function(req, res){
     },

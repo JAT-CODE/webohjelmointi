@@ -63,13 +63,19 @@ $().ready (() => {
     );
 
     // tekee post-kutsun palvelimelle ja vastauksen saatuaan jatkaa
+    //kutsuu addcust validointia tarkistaakseen onko parametrikentät täytetty
     addCust = (param) => {
+        if (!validateAddCust(form)) {
+          console.log("Jokin parametri puuttuu");
+          $('#warning').show();
+        } else {
         $.post("http://localhost:3002/Asiakas", param)
             .then((data) => {
                 showAddCustStat(data);
                 $('#addCustDialog').dialog("close");
                 fetch();
             });
+        }
     }
 
     // näyttää lisäyksen onnistumisen tai epäonnistumisen
