@@ -47,7 +47,8 @@
                     <th>Postitoimipaikka</th>
                     <th>Luontipäivämäärä</th>
                     <th>Asiakastyyppi</th>
-                    <th style="min-width: 100px; max-width: 125px;"></th>
+                    <th>Poista</th>
+                    <th>Muuta</th>
                 </tr>
             </thead>
             <tbody>
@@ -78,6 +79,33 @@
                 </fieldset>
                 <p id="warning" class="warning">Kaikki kentät ovat pakollisia!</p>
                 <input type="submit" value="Lisää" id="addCustSubmit">
+            </form>
+        </div>
+    </div>
+    <!--Asiakkaan muokkaus dialogi-->
+    <div class="modCustDialog" id="modCustDialog" title="Asiakkaan muokkaus">
+        <div class="modCustDiv" id="modCustDiv">
+            <form name="modForm">
+                <fieldset style="margin-bottom: 1rem;">
+                    <legend>Asiakkaan tiedot</legend>
+                    <div class="gridContainer">
+                        <p hidden id="avain"></p>
+                        <label for="custName">Nimi</label>
+                        <input type="text" name="nimi" id="mnimi">
+                        <label for="custAddress">Osoite</label>
+                        <input type="text" name="osoite" id="mosoite">
+                        <label for="custPostNbr">Postinumero</label>
+                        <input type="text" name="postinro" id="mpostinro">
+                        <label for="custPostOff">Postitoimipaikka</label>
+                        <input type="text" name="postitmp" id="mpostitmp">
+                        <label for="custType">Asiaskastyyppi: </label>
+                        <select name="asty_avain" class="custType" id="masty_avain">
+                            <option value="empty" selected disabled>Valitse asiakastyyppi...</option>
+                        </select>
+                    </div>
+                </fieldset>
+                <p id="warning" class="warning">Kaikki kentät ovat pakollisia!</p>
+                <input type="submit" value="Tallenna" id="modCustSubmit">
             </form>
         </div>
     </div>

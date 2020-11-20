@@ -57,6 +57,7 @@ app.route('/Asiakas')
 
 app.route('/Asiakas/:id')
     .put(customerController.update)
+    .get(customerController.fetchCustomer)
     .delete(customerController.delete);
 //
 

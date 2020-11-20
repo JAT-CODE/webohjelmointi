@@ -51,7 +51,20 @@ $().ready (() => {
         }
     });
 
-    // luodaan formi
+    // luodaan asiakkaanmuokkausdialogi
+    let modDialog = $('#modCustDialog').dialog({
+        autoOpen: false,
+        modal: true,
+        resizable: false,
+        minWidth: 400,
+        width: 'auto',
+        close: function () {
+            form[0].reset();
+            allFields.removeClass("ui-state-error");
+        }
+    });
+
+    // luodaan formi lisäykseen
     let form = dialog.find("form")
         .on("submit", (event) => {
             event.preventDefault();
@@ -59,6 +72,17 @@ $().ready (() => {
                 let param = dialog.find("form").serialize();
                 addCust(param);
             //} // ja tämä
+        }
+    );
+
+    
+    // luodaan formi muokkaukseen
+    let modForm = modDialog.find("form")
+        .on("submit", (event) => {
+            event.preventDefault();
+            let param = modDialog.find("form").serialize();
+            let avainT = $('#avain').val();
+            modifyCustomer(param, avainT);
         }
     );
 
@@ -72,8 +96,9 @@ $().ready (() => {
         $.post("http://localhost:3002/Asiakas", param)
             .then((data) => {
                 showAddCustStat(data);
-                $('#addCustDialog').dialog("close");
+                console.log("logtest")
                 fetch();
+                $('#addCustDialog').dialog("close");
             });
         }
     }
@@ -158,7 +183,33 @@ showResultInTable = (result, astys) => {
         trstr += "<td>" + element.LUONTIPVM + "</td>\n";
         trstr += "<td>" + element.ASTY_AVAIN + "</td>\n";
         trstr += '<td><button type="button" value="Poista" onclick="deleteCustomer('+element.AVAIN+')">Poista</button></td>\n';
+        trstr += '<td><button type="button" value="Muuta" id="Muuta" onclick="modClick('+element.AVAIN+')">Muuta</button></td>\n';
         $('#data tbody').append(trstr);
+    });
+}
+
+
+
+function modClick(avain) {
+    const isOpen = $('#modCustDialog').dialog("isOpen");
+    if (!isOpen) {
+        $('#modCustDialog').dialog("open");
+    }
+    $.ajax({
+        url: `http://localhost:3002/Asiakas/${avain}`,
+        type: 'GET',
+        success: (result) => {
+            result.forEach((element) => {
+                $("#avain").val(avain);
+                $("#mnimi").val(element.NIMI);
+                $("#mosoite").val(element.OSOITE);
+                $("#mpostinro").val(element.POSTINRO);
+                $("#mpostitmp").val(element.POSTITMP);
+                $("#masty_avain").val(element.ASTY_AVAIN);
+            })
+            console.log("success");
+
+        }
     });
 }
 
@@ -178,6 +229,31 @@ deleteCustomer = (key) => {
         }
     });
 }
+
+// muutetaan asiakkaan tietoja
+
+modifyCustomer = (param, avain) => {
+    console.log("testingmod")
+    console.log(JSON.stringify(param));
+    $.ajax({
+        url: `http://localhost:3002/Asiakas/${avain}`,
+        type: 'PUT',
+        data: {
+            id: avain,
+            nimi: $('#mnimi').val(),
+            osoite: $('#mosoite').val(),
+            postinro: $('#mpostinro').val(),
+            postitmp: $('#mpostitmp').val(),
+            asty_avain: $('#masty_avain').val()
+        },
+        success: function(result) {
+            console.log(result);
+            $('#modCustDialog').dialog("close");
+            fetch();
+        }
+    })
+}
+
 
 toTitleCase = (str) => {
     return str.replace(

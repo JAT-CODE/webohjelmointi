@@ -35,6 +35,27 @@ module.exports = {
       });
     },
 
+    fetchCustomer: function(req, res){
+      var sql = 'SELECT * FROM asiakas WHERE 1 = 1';
+      var avain = req.params.id;
+      sql = sql + " AND avain = '" + avain + "%'";
+
+      connection.query(sql, function(error, results, fields){
+        if ( error ){
+          console.log("Virhe haettaessa dataa Asiakas taulusta: " + error);
+          res.status(500);
+          res.json({"status" : "bad request"});
+        }
+        else
+        {
+          console.log(sql);
+          res.status(200);
+          res.json(results);
+          //res.json({"status" : "ok"});
+        }
+      });
+    },
+
     fetchAll: function(req, res){
       //T2 Toteutus
       var sql = 'SELECT * FROM asiakas WHERE 1 = 1';
@@ -101,7 +122,21 @@ module.exports = {
   },
 
     update: function(req, res){
-    },
+      var sql = 'UPDATE asiakas SET nimi="'+req.body.nimi+'", osoite="'+req.body.osoite+'", postinro="'+req.body.postinro+'", postitmp="'+req.body.postitmp+'", asty_avain='+req.body.asty_avain+' WHERE avain ='+req.params.id;
+
+      connection.query(sql, function (error, results, fields) {
+        if (error) {
+          console.log(sql);
+          console.log("Virhe muutettaessa dataa Asiakas taulusta: " + error);
+          res.status(400);
+          res.json({ "status": "bad request" });
+        }
+        else {
+          response.statusCode = 200;
+          res.json({ "status": "ok" });
+        }
+    })
+  },
 
     delete : function (req, res) {
       //connection.query...
